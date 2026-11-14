@@ -1,0 +1,106 @@
+
+<div class="page">
+  <header class="head">
+    <div class="title">
+      <div class="flagbox" id="flagbox" aria-hidden="true"></div>
+      <div>
+        <h1>Rota Poliglota <span class="hl">· <span id="hLang">Inglês</span></span></h1>
+        <div class="sub" id="hSub">Seu guia de estudo, do A1 ao C2</div>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <button class="gearbtn" type="button" id="gearBtn" aria-haspopup="dialog" aria-controls="setOverlay" aria-label="Configurações: idioma e ritmo de estudo">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13.2c.04-.4.06-.8.06-1.2s-.02-.8-.06-1.2l2.1-1.6a.5.5 0 0 0 .12-.64l-2-3.4a.5.5 0 0 0-.6-.22l-2.4 1a7.6 7.6 0 0 0-2.1-1.2l-.36-2.56a.5.5 0 0 0-.5-.42h-4a.5.5 0 0 0-.5.42l-.36 2.56c-.76.3-1.47.7-2.1 1.2l-2.4-1a.5.5 0 0 0-.6.22l-2 3.4a.5.5 0 0 0 .12.64l2.1 1.6c-.04.4-.06.8-.06 1.2s.02.8.06 1.2l-2.1 1.6a.5.5 0 0 0-.12.64l2 3.4a.5.5 0 0 0 .6.22l2.4-1c.63.5 1.34.9 2.1 1.2l.36 2.56a.5.5 0 0 0 .5.42h4a.5.5 0 0 0 .5-.42l.36-2.56a7.6 7.6 0 0 0 2.1-1.2l2.4 1a.5.5 0 0 0 .6-.22l2-3.4a.5.5 0 0 0-.12-.64z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <span>Configurações</span>
+    </button>
+  </header>
+
+  <div class="realms-wrap"><nav class="realms" id="realms" aria-label="Mapas por nível"></nav></div>
+
+  <main class="layout" id="mainLayout">
+   <div class="col">
+    <section class="card today" id="today" aria-live="polite"></section>
+    <section class="card exintro" id="exintro"></section>
+    <section class="card wrintro" id="wrintro"></section>
+    <section class="card wrintro tdintro" id="tdintro"></section>
+    <section class="card revintro" id="revintro"></section>
+    <section class="card notes" id="notes"></section>
+   </div>
+   <div class="col">
+    <section class="boardwrap">
+      <div id="boardHead"></div>
+      <div class="flow" id="flow"></div>
+      <div class="board-frame" style="display:none"><div class="board-scroll"><div class="board-inner" id="boardInner">
+        <svg id="board" viewBox="0 0 1400 760" aria-label="Mapa mental das etapas do nível"></svg>
+        <div class="pop" id="pop" hidden></div>
+        <div class="toast" id="toast"></div>
+      </div></div></div>
+
+    </section>
+    <section class="card res" id="res"></section>
+   </div>
+  </main>
+
+  <section class="exview" id="exView" hidden aria-label="Exercícios">
+    <div class="exviewtop">
+      <button type="button" class="btng exback" id="exBack">← Voltar ao mapa</button>
+      <div class="exstat" id="exHead"></div>
+    </div>
+    <div class="eyebrow">Pratique</div>
+    <h2 class="cardt"><span class="ini">E</span>xercícios</h2>
+    <div id="exSubjBar"></div>
+    <div id="exBody"></div>
+  </section>
+
+  <section class="exview" id="stepView" hidden aria-label="Etapa">
+    <div class="exviewtop">
+      <button type="button" class="btng exback" id="stBack">← Voltar ao fluxograma</button>
+      <div class="exstat" id="stepHead"></div>
+    </div>
+    <div id="stepBody"></div>
+  </section>
+
+  <section class="exview" id="wrView" hidden aria-label="Escrita">
+    <div class="exviewtop">
+      <button type="button" class="btng exback" id="wrBack">← Voltar ao mapa</button>
+      <div class="exstat" id="wrHead"></div>
+    </div>
+    <div class="eyebrow">Escreva à mão</div>
+    <h2 class="cardt"><span class="ini">E</span>scrita</h2>
+    <div id="wrBody"></div>
+  </section>
+  <section class="exview" id="tdView" hidden aria-label="Livro didático">
+    <div class="exviewtop">
+      <button type="button" class="btng exback" id="tdBack">← Voltar ao mapa</button>
+      <div class="exstat" id="tdHead"></div>
+    </div>
+    <div class="eyebrow">Estude no seu livro</div>
+    <h2 class="cardt"><span class="ini">L</span>ivro didático</h2>
+    <div id="tdBody"></div>
+  </section>
+  <section class="exview" id="revView" hidden aria-label="Baralho de revisão">
+    <div class="exviewtop">
+      <button type="button" class="btng exback" id="revBack">← Voltar ao mapa</button>
+      <div class="exstat" id="revHead"></div>
+    </div>
+    <div class="eyebrow">Memorize</div>
+    <h2 class="cardt"><span class="ini">B</span>aralho de revisão</h2>
+    <div id="revBody"></div>
+  </section>
+</div>
+<div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="lvTitle"><div class="lvup"><div class="confetti" id="confetti"></div><div class="eyebrow" id="lvEb">Você subiu de nível!</div><div class="big"><i id="lvNum">2</i></div><h3 id="lvTitle">Nível 2</h3><p id="lvMsg"></p><button class="btnp" type="button" id="lvOk">Continuar</button></div></div>
+
+<div class="overlay" id="setOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="setTitle">
+  <div class="modalcard set">
+    <button class="modalx" type="button" id="setClose" aria-label="Fechar configurações">×</button>
+    <div class="eyebrow">Configurações</div>
+    <h2 class="cardt" id="setTitle"><span class="ini">C</span>onfigurações</h2>
+    <div class="setsec">
+      <div class="flbl">Estou aprendendo</div>
+      <nav class="langs" id="langs" aria-label="Idioma que você está aprendendo"></nav>
+    </div>
+    <div class="setsec" id="config"></div>
+  </div>
+</div>
+
+<script>

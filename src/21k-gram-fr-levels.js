@@ -1,0 +1,66 @@
+/* ---------- gramática A2–C2: francês ---------- */
+gDefineLvl("fr","A2","passé composé français","futur proche et pronoms français",[
+ GU("Passé composé com avoir","<b>avoir</b> + particípio: <b>J'ai mangé</b>, <b>tu as fini</b>, <b>nous avons vu</b>.",[
+  gc("Hier, j'___ mangé une pizza.","ai",["suis","as","ont"]),gc("Elle ___ fini son travail.","a",["est","ai","ont"]),gc("Nous ___ vu ce film.","avons",["sommes","avez","ont"]),gt("Tu as ___ (parler) avec lui ?","parlé")]),
+ GU("Passé composé com être","Verbos de movimento e reflexivos usam <b>être</b>: <b>Je suis allé(e)</b>, <b>elle est partie</b>, <b>nous nous sommes levés</b>.",[
+  gc("Hier, je ___ allé au cinéma.","suis",["ai","es","a"]),gc("Elle ___ partie à huit heures.","est",["a","ai","sont"]),gc("Ils ___ arrivés en retard.","sont",["ont","est","sommes"]),gt("Nous sommes ___ (venir) tôt.","venus|venues")]),
+ GU("Futur proche","<b>aller</b> + infinitivo: <b>Je vais manger</b>, <b>tu vas partir</b>, <b>ils vont venir</b>.",[
+  gc("Demain, je ___ voyager.","vais",["vas","vont","allons"]),gc("Elle ___ partir bientôt.","va",["vais","vont","vas"]),gc("Nous ___ étudier ce soir.","allons",["allez","vont","va"]),gt("Ils vont ___ (arriver) demain.","arriver")]),
+ GU("Pronomes COD: le, la, les","<b>le/la/les</b> antes do verbo: Je vois Paul → <b>Je le vois</b>. J'aime la musique → <b>Je l'aime</b>.",[
+  gc("Je vois Paul → Je ___ vois.","le",["la","les","lui"]),gc("Elle mange la pomme → Elle ___ mange.","la",["le","les","l'ai"]),gc("Il prend les clés → Il ___ prend.","les",["le","la","leur"]),gt("J'aime la musique → je ___ aime.","l'|l")]),
+ GU("Comparativos","<b>plus … que</b>, <b>moins … que</b>, <b>aussi … que</b>. Irregular: <b>meilleur</b> (melhor), <b>mieux</b> (melhor, advérbio).",[
+  gc("Paul est ___ grand que moi.","plus",["aussi","très","beaucoup"]),gc("Elle est ___ grande que sa sœur.","aussi",["plus que","tant","si"]),gc("“Melhor” (adjetivo):","meilleur",["mieux","plus bon","bonner"]),gt("Elle chante ___ (melhor) que moi.","mieux")]),
+ GU("Partitivos","<b>du, de la, des</b>: Je mange <b>du</b> pain. Negativa: <b>pas de</b>: Je ne mange pas <b>de</b> pain.",[
+  gc("Je bois ___ eau.","de l'",["du","des","un"]),gc("Il mange ___ pain.","du",["de la","des","de"]),gc("Je n'ai pas ___ argent.","d'",["de l'","du","des"]),gt("Elle prend ___ salade. (la)","de la")])]);
+gDefineLvl("fr","B1","imparfait vs passé composé","subjonctif présent français",[
+ GU("Imparfait","<b>-ais, -ais, -ait, -ions, -iez, -aient</b>: <b>Je parlais</b>, <b>nous mangions</b>. Hábito e cenário.",[
+  gc("Quand j'étais petit, je ___ au foot.","jouais",["ai joué","joue","jouerai"]),gc("Elle ___ souvent à Paris. (habiter)","habitait",["a habité","habite","habitera"]),gc("Nous ___ le matin. (travailler)","travaillions",["travaillons","avons travaillé","travailliez"]),gt("Ils ___ (avoir) un chien.","avaient")]),
+ GU("Imparfait × passé composé","<b>Imparfait</b> = cenário; <b>passé composé</b> = fato: <b>Je dormais</b> quand le téléphone <b>a sonné</b>.",[
+  gc("Je ___ quand il est arrivé. (dormir)","dormais",["ai dormi","dors","dormirai"]),gc("Il pleuvait et nous ___ à la maison. (rester)","sommes restés",["restions","restons","resterons"]),gc("Hier, elle ___ un livre. (acheter)","a acheté",["achetait","achète","achètera"]),gt("Il faisait beau, alors nous ___ (sortir, nous).","sommes sortis")]),
+ GU("Futur simple","Infinitivo + <b>-ai, -as, -a, -ons, -ez, -ont</b>: <b>je parlerai</b>. Irregulares: <b>serai, aurai, irai, ferai</b>.",[
+  gc("Demain, je ___ à Paris. (aller)","irai",["vais","allais","suis allé"]),gc("Elle ___ docteure. (être)","sera",["serait","est","était"]),gc("Nous ___ du sport. (faire)","ferons",["faisons","ferions","faisions"]),gt("Tu ___ (avoir) le temps.","auras")]),
+ GU("Conditionnel présent","<b>Je voudrais</b>, <b>tu pourrais</b>, <b>il faudrait</b>: infinitivo + -ais, -ait… Cortesia e hipótese.",[
+  gc("“Gostaria de um café”:","Je voudrais un café.",["Je veux un café.","Je voulais un café.","Je voudrai un café."]),gc("___-vous m'aider ? (pouvoir)","Pourriez",["Pouvez a","Pourrez","Pouviez"]),gc("À ta place, j'___ moins. (manger)","mangerais",["mangeais","mangerai","mange"]),gt("Elle ___ (aimer) voyager.","aimerait")]),
+ GU("Subjonctif présent","Após <b>il faut que, je veux que, bien que</b>: <b>Il faut que tu viennes</b>.",[
+  gc("Il faut que tu ___ . (venir)","viennes",["viens","viendras","venais"]),gc("Je veux qu'elle ___ . (être)","soit",["est","sera","était"]),gc("Bien qu'il ___ fatigué, il travaille. (être)","soit",["est","sera","serait"]),gt("Il faut que nous ___ (finir) tôt.","finissions")]),
+ GU("Y et en","<b>y</b> = lugar/à + coisa: J'y vais. <b>en</b> = de + coisa/quantidade: J'en veux deux. Je viens de Paris → J'<b>en</b> viens.",[
+  gc("Tu vas à Paris ? Oui, j'___ vais.","y",["en","le","lui"]),gc("Tu veux du café ? Oui, j'___ veux.","en",["y","le","la"]),gc("Il parle de son travail → Il ___ parle.","en",["y","lui","le"]),gt("Elle pense à ses vacances → elle ___ pense.","y")])]);
+gDefineLvl("fr","B2","subjonctif doute souhait français","conditionnel si hypothèse français",[
+ GU("Subjonctif: dúvida e sentimento","<b>Je doute que, je regrette que, je suis content que</b> + subj. Mas <b>je pense que</b> + indicatif.",[
+  gc("Je doute qu'il ___ la vérité. (savoir)","sache",["sait","saura","savait"]),gc("Je pense qu'elle ___ raison. (avoir)","a",["ait","aurait","eût"]),gc("Je suis content que vous ___ là. (être)","soyez",["êtes","serez","étiez"]),gt("Je regrette qu'il ne ___ pas (pouvoir) venir.","puisse")]),
+ GU("Plus-que-parfait","<b>avoir/être</b> no imparfait + particípio: <b>j'avais mangé</b>, <b>elle était partie</b>.",[
+  gc("Quand je suis arrivé, elle ___ déjà partie.","était",["a","avait","sera"]),gc("Nous ___ déjà mangé.","avions",["avons","aurions","eûmes"]),gc("Il n'___ jamais vu la mer.","avait",["a","était","aura"]),gt("Elle ___ (avoir) fini avant moi.","avait")]),
+ GU("Si + imparfait → conditionnel","<b>Si j'avais</b> le temps, <b>je voyagerais</b>.",[
+  gc("Si j'___ de l'argent, j'achèterais une maison.","avais",["ai","aurai","aurais"]),gc("S'il pleuvait, nous ___ à la maison.","resterions",["resterons","restions","sommes restés"]),gc("Si tu venais, je ___ content.","serais",["suis","serai","étais"]),gt("Si elle ___ (savoir), elle dirait.","savait")]),
+ GU("Pronomes relativos","<b>qui</b> (sujeito), <b>que</b> (objeto), <b>dont</b> (de), <b>où</b> (lugar/tempo). Le livre <b>dont</b> je parle.",[
+  gc("Le livre ___ je parle est ici.","dont",["que","qui","où"]),gc("L'homme ___ habite là est mon oncle.","qui",["que","dont","où"]),gc("La ville ___ je suis né est belle.","où",["que","qui","dont"]),gt("Le film ___ j'ai vu était long. (que)","que|qu'")]),
+ GU("Discurso indireto","“Je suis fatigué” → Il a dit qu'il <b>était</b> fatigué. “Je viendrai” → il a dit qu'il <b>viendrait</b>.",[
+  gc("“J'ai faim” → Elle a dit qu'elle ___ faim.","avait",["a","aura","eut"]),gc("“Je partirai” → Il a dit qu'il ___ .","partirait",["partira","part","partait"]),gc("“Je suis là” → Il a dit qu'il ___ là.","était",["est","sera","fut"]),gt("“Je viens” → Elle a dit qu'elle ___ (venir).","venait")]),
+ GU("Voix passive","<b>être</b> + particípio (+ par): Le livre <b>est écrit par</b> Camus. Passé: <b>a été écrit</b>.",[
+  gc("Ce roman ___ écrit par Camus.","a été",["a","est eu","avait"]),gc("La maison ___ vendue hier.","a été",["est","a","était"]),gc("Ces lettres ___ envoyées demain.","seront",["sont été","ont","seraient"]),gt("Le problème ___ (résoudre) par l'équipe.","a été résolu|est résolu")])]);
+gDefineLvl("fr","C1","subjonctif imparfait passé français","hypothèse passé connecteurs français avancé",[
+ GU("Subjonctif passé","<b>que + avoir/être (subj.) + particípio</b>: <b>Je suis content que tu aies réussi</b>. Ação já concluída.",[
+  gc("Je suis content que tu ___ réussi.","aies",["as","avais","aurais"]),gc("Bien qu'elle ___ partie, je l'attends.","soit",["est","était","sera"]),gc("Il faut que nous ___ fini avant midi.","ayons",["avons","avions","aurons"]),gt("Je doute qu'il ___ (venir, passé) hier.","soit venu")]),
+ GU("Si + plus-que-parfait","<b>Si + plus-que-parfait</b>, <b>conditionnel passé</b>: <b>Si j'avais su, je serais venu</b>.",[
+  gc("Si j'___ su, je serais venu.","avais",["aurais","ai","aurai"]),gc("Si elle ___ étudié, elle aurait réussi.","avait",["aurait","a","eût"]),gc("Nous ___ venus si tu nous avais invités.","serions",["sommes","étions","serons"]),gt("S'il ___ (pleuvoir, p-q-p), nous serions restés.","avait plu")]),
+ GU("Conectores concessivos","<b>bien que, quoique</b> + subjonctif; <b>malgré</b> + nome; <b>pourtant, cependant</b>.",[
+  gc("___ il soit malade, il travaille.","Bien qu'",["Malgré","Pourtant","Parce qu'"]),gc("___ la pluie, nous sortons.","Malgré",["Bien que","Quoique","Pourtant"]),gc("Il est jeune ; ___, il est sage.","pourtant",["quoique","malgré","bien que"]),gt("___ (quoique) il soit tard, restons.","Quoiqu'|Quoique")]),
+ GU("Pronomes duplos","<b>le lui, le leur, m'en, y en</b>: Je donne le livre à Paul → Je <b>le lui</b> donne.",[
+  gc("Je donne le livre à Paul → Je ___ donne.","le lui",["lui le","le leur","lui l'"]),gc("Il parle de ses projets à ses amis → Il ___ parle.","leur en",["en leur","leur y","lui en"]),gc("Il y a du pain ? Oui, il ___ a.","y en",["en y","y le","en a y"]),gt("Elle me donne des fleurs → Elle ___ donne.","m'en")]),
+ GU("Gerúndio e particípio presente","<b>en + -ant</b> (simultaneidade): <b>En marchant</b>, il chante. <b>Participe</b>: <b>Voyant</b> la pluie, il resta.",[
+  gc("___ (marcher), il chante.","En marchant",["Marchant à","En marcher","En marché"]),gc("“Enquanto comia, lia”:","En mangeant, il lisait.",["En mangé, il lisait.","Mangeant en, il lisait.","À manger, il lisait."]),gc("Forma de “faire” no gerúndio:","en faisant",["en faissant","en fait","en ferons"]),gt("En ___ (finir) son travail, elle partit.","finissant")]),
+ GU("Nominalização e estilo","Substituir verbo por nome: <b>Il a échoué</b> → <b>son échec</b>. <b>Il est arrivé</b> → <b>son arrivée</b>.",[
+  gc("“Il a échoué” → ___","son échec",["son échoue","il échec","l'échouer"]),gc("“Il est arrivé” → ___","son arrivée",["son arrivé","l'arriver","il arrivée"]),gc("“Elle a décidé” → ___","sa décision",["son décider","sa décidé","la décide"]),gt("“Ils ont réussi” → leur ___","réussite")])]);
+gDefineLvl("fr","C2","nuances avancées français","registre soutenu français",[
+ GU("Futur antérieur","<b>futur + particípio</b>: <b>Quand tu arriveras, j'aurai fini</b>. Também conjectura: <b>Il aura oublié</b>.",[
+  gc("Quand tu arriveras, j'___ fini.","aurai",["avais","aurais","ai"]),gc("Il ___ oublié (suposição).","aura",["avait","aurait","a"]),gc("Demain à midi, nous ___ terminé.","aurons",["avons","aurions","avions"]),gt("Elle ___ (partir, fut. ant.) avant nous.","sera partie")]),
+ GU("Passé simple (leitura)","Literário: <b>il parla, il fut, il eut, il vint, il fit</b>. Raramente falado.",[
+  gc("“Il fut” = ?","ele foi/esteve (passé simple)",["ele será","ele é","ele fora"]),gc("Passé simple de “avoir” (il):","eut",["avait","a eu","aura"]),gc("Il ___ à la porte. (frapper, passé simple)","frappa",["frappe","frappait","frappera"]),gt("Elle ___ (venir, passé simple) hier soir.","vint")]),
+ GU("Subjonctif após conjunções","<b>afin que, pourvu que, à moins que, avant que, jusqu'à ce que</b> + subj.",[
+  gc("Je pars avant qu'il ne ___ .","vienne",["vient","viendra","venait"]),gc("Je viendrai pourvu que tu ___ là.","sois",["es","seras","étais"]),gc("Il parle lentement afin qu'on le ___ .","comprenne",["comprend","comprendra","comprenait"]),gt("À moins qu'elle ne ___ (vouloir), on part.","veuille")]),
+ GU("Expressões idiomáticas","<b>avoir le cafard</b> (estar triste), <b>poser un lapin</b> (dar um bolo), <b>coûter les yeux de la tête</b> (custar muito).",[
+  gc("“Avoir le cafard” = ?","estar deprimido",["ter baratas","estar cansado","estar bravo"]),gc("“Poser un lapin” = ?","dar um bolo",["ter um coelho","pôr a mesa","fazer mágica"]),gc("“Coûter les yeux de la tête” = ?","custar muito caro",["ser bonito","custar barato","ter bons olhos"]),gt("Il m'a posé un ___ .","lapin")]),
+ GU("Registro formal","<b>Je vous prie de bien vouloir…</b>, <b>Veuillez agréer…</b>, <b>Je me permets de…</b>.",[
+  gc("Fechamento formal de carta:","Veuillez agréer mes salutations distinguées.",["Salut !","À plus !","Bises !"]),gc("“Peço que queira…”:","Je vous prie de bien vouloir…",["Je te demande vouloir…","Je veux que vous…","Vous devez bien…"]),gc("“Permito-me escrever”:","Je me permets de vous écrire.",["Je permets vous écrire.","Je me permis écrire.","Je vous permets écrire."]),gt("Je vous ___ (prier) de bien vouloir répondre.","prie")]),
+ GU("Inversão e ênfase","Após advérbios: <b>Peut-être que</b>/<b>Peut-être</b> + inversão; <b>Jamais je n'ai</b>; <b>c'est… que</b>: <b>C'est Paul qui</b>.",[
+  gc("Ênfase: ___ Paul qui a gagné.","C'est",["Il est","Est","Cela"]),gc("“Jamais” no início:","Jamais je n'ai vu ça.",["Jamais j'ai vu ça.","Je jamais ai vu ça.","Jamais ai je vu."]),gc("“Talvez ele venha”:","Peut-être viendra-t-il.",["Peut-être il viendra-t.","Peut-être viendra il-t.","Viendra peut-être t-il."]),gt("C'est à toi ___ je parle.","que|qu'")])]);

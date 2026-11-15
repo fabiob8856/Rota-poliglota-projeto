@@ -1,7 +1,7 @@
 {
   "name": "rota-poliglota",
   "productName": "Projeto Hermes",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Guia de estudo de idiomas (inglês, espanhol, francês, russo, turco e árabe) do A1 ao C2.",
   "main": "electron/main.js",
   "author": "Fábio",

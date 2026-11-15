@@ -12,7 +12,7 @@ const FLAGS = {
 function renderHead(){
   const C = CL(), p = P(), L = lvl(p.cfg.level), st = streak(), tot = totalDone();
   document.body.dataset.lang = S.lang;
-  document.title = "Rota Poliglota · " + C.name;
+  document.title = "Projeto Hermes / " + C.name;
   document.getElementById("flagbox").innerHTML = FLAGS[S.lang];
   document.getElementById("hLang").textContent = C.name;
   document.getElementById("hSub").textContent = C.sub;

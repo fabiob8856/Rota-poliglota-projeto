@@ -1,0 +1,1 @@
+PKBUILD(PKDATA2, "pq", 10);

@@ -14,6 +14,7 @@ const DUO = [
   M("d9","duo","Suba uma liga no Duolingo","Ganhe XP suficiente hoje para melhorar sua posição.",15)
 ];
 const EXTRA = [
+  M("sp1","mem","Complete a sopa de letrinhas em Exercícios","Monte as 5 palavras arrastando as letras. Marca sozinha ao terminar.",15,"ABC"),
   M("n1","ime","Troque o idioma do celular para {L} por hoje","Os menus viram vocabulário real. Anote 3 palavras que você não conhecia.",15,"ABC",{min:5}),
   M("n2","fala","Descreva em voz alta o que você vê ao seu redor, em {L}","Fale por 2 minutos sem parar. Se faltar palavra, descreva de outro jeito.",15,"AB",{min:5}),
   M("n3","esc","Escreva 5 frases sobre o seu dia de hoje em {L}","Use o que já estudou. Releia e corrija uma frase.",15,"AB",{min:10}),
@@ -40,6 +41,12 @@ const EXTRA = [
   M("n24","fala","Pratique 5 perguntas e respostas em {L} em voz alta","Quem, onde, quando, por quê, como. Responda sobre você.",15,"AB",{min:5}),
   M("tv1","ime","Assista um episódio de série ou um filme em {L}, com legendas em português","Pode ver em partes. Anote 3 palavras ou frases que ouviu. Sugestões: {SUG1}.",30,"AB",{min:15,lv:["A1","A2","B1"]}),
   M("tv2","ime","Assista a um filme em {L}","Pode dividir em partes ao longo da semana. Tente legenda em {L} ou sem legenda e anote 5 expressões novas. Sugestões: {SUG2}.",35,"BC",{min:15,lv:["B2","C1","C2"]}),
+  M("pd1","ime","Ouça um episódio de podcast para aprendizes em {L}","Escolha um episódio curto, ouça uma vez sem ler e outra lendo a transcrição. Sugestões: {POD1}.",25,"AB",{min:15,lv:["A1","A2","B1"]}),
+  M("pd2","ime","Ouça um episódio de podcast em {L} no ritmo de falantes nativos","Ouça de ponta a ponta, anote 5 palavras ou expressões e resuma o episódio em 2 frases. Sugestões: {POD2}.",30,"BC",{min:20,lv:["B2","C1","C2"]}),
+  M("pd3","ime","Ouça um podcast em {L} e faça shadowing de 1 minuto","Pause num trecho de que gostou e repita junto com o apresentador, copiando ritmo e entonação. Sugestões: {POD1}.",25,"ABC",{min:15}),
+  M("rd1","ime","Ouça uma rádio ao vivo em {L} por 10 minutos","Deixe tocando enquanto faz outra coisa. Anote 3 palavras que se repetem. Sugestões: {RADIO}.",20,"ABC",{min:10}),
+  M("rd2","ime","Ouça as notícias de uma rádio em {L} e conte o assunto principal","Mesmo entendendo pouco, tente descobrir o tema. Depois leia a notícia no site da rádio. Sugestões: {RADIO}.",25,"BC",{min:15,lv:["B1","B2","C1","C2"]}),
+  M("rd3","ime","Acostume o ouvido: 5 minutos de rádio em {L}, sem tentar entender tudo","Foque no som e no ritmo e anote só as palavras que reconhecer. Sugestões: {RADIO}.",10,"A",{min:5,lv:["A1","A2"]}),
   M("c1","fala","Narre em voz alta o que está fazendo por 5 minutos","Cozinhando, arrumando a casa, no trânsito: “Agora eu estou…”.",20),
   M("c3","esc","Escreva a lista de compras em {L}","Procure no dicionário só o que não souber.",15),
   M("c5","fala","Descreva uma foto do seu celular em voz alta: 5 frases","Quem está, onde, o que fazem, que dia era, por que você gosta dela.",20),
@@ -134,6 +141,7 @@ function missionsGen(dn, avoid, v, salt){
   let rem = v - (t ? t.min : 0);
   const used = new Set(t ? [t.tag] : []);
   if (dn % 3 === 0){ const tv = draw(EXTRA.filter(m => m.id.startsWith("tv") && ok(m))); if (tv){ out.push(tv); used.add(tv.tag); rem = Math.max(0, rem - tv.min); } } // a cada 3 dias entra série/filme
+  if (dn % 3 === 1){ const pr = draw(EXTRA.filter(m => /^(pd|rd)/.test(m.id) && ok(m) && !out.includes(m))); if (pr){ out.push(pr); used.add(pr.tag); rem = Math.max(0, rem - pr.min); } } // em outro dia do ciclo entra podcast ou rádio
   for (let i = 0; i < 4 && rem >= 5; i++){
     const c = EXTRA.filter(m => ok(m) && !out.includes(m) && m.min <= rem), fresh = c.filter(m => !used.has(m.tag)), e = draw(fresh.length ? fresh : c);
     if (e){ out.push(e); used.add(e.tag); rem -= e.min; } else break;
@@ -141,8 +149,16 @@ function missionsGen(dn, avoid, v, salt){
   return out;
 }
 function missionsFor(dn){ const sh = P().mshuf; if (sh && sh.date === T && dn === dayNum(NOW)){ const l = sh.ids.map(id => MALL.find(m => m.id === id)).filter(Boolean); (sh.shown || []).forEach(id => { const m = MALL.find(x => x.id === id); if (m && missionDone(id) && !l.includes(m)) l.push(m); }); if (l.length) return l; } const v = timeBudget().v; return missionsGen(dn, missionsGen(dn - 1, [], v).map(m => m.id), v); }
+const MPOD = {
+  en:["6 Minute English (BBC), All Ears English","The Daily (NYT), This American Life, Radiolab","BBC Radio 4, BBC World Service, NPR"],
+  es:["Notes in Spanish, Hoy Hablamos","Radio Ambulante, El Podcast de Radio Nacional","RNE (Radio Nacional de España), Radio Nacional Argentina"],
+  fr:["InnerFrench, RFI Journal en français facile","France Culture (podcasts), Les Savanturiers","France Inter, RFI, France Info"],
+  ru:["Russian with Max, Russian Progress","Радио Маяк (подкасты), подкасты на Яндекс Музыке","Радио Маяк, Русское радио, Эхо Москвы"],
+  tr:["Turkish Tea Time, Easy Turkish","Podcasts da Spotify em turco, programas da TRT","TRT Radyo 1, Radyo D, Power Türk"],
+  ar:["ArabicPod101, Learn Arabic with Maha","Podcasts em árabe no Spotify, programas da Al Jazeera","Radio Monte Carlo Doualiya, BBC Arabic, Al Jazeera"]
+};
 const MSUG = {en:["Friends, The Office, Stranger Things","Forrest Gump, Inception, The Social Network"], es:["La Casa de Papel, Élite, Control Z","Relatos salvajes, El laberinto del fauno"], fr:["Lupin, Dix pour cent, Call My Agent","Amélie, Intouchables, La Haine"], ru:["Кухня, Склифосовский","Ирония судьбы, Холоп, Брат"], tr:["Kızılcık Şerbeti, Aşk-ı Memnu","Babam ve Oğlum, Eşkıya"], ar:["باب الحارة","عمارة يعقوبيان، وجدة"]};
-const mText = s => s.replace(/\{L\}/g, CL().name.toLowerCase()).replace(/\{SUG1\}/g, (MSUG[S.lang] || MSUG.en)[0]).replace(/\{SUG2\}/g, (MSUG[S.lang] || MSUG.en)[1]);
+const mText = s => s.replace(/\{L\}/g, CL().name.toLowerCase()).replace(/\{SUG1\}/g, (MSUG[S.lang] || MSUG.en)[0]).replace(/\{SUG2\}/g, (MSUG[S.lang] || MSUG.en)[1]).replace(/\{POD1\}/g, (MPOD[S.lang] || MPOD.en)[0]).replace(/\{POD2\}/g, (MPOD[S.lang] || MPOD.en)[1]).replace(/\{RADIO\}/g, (MPOD[S.lang] || MPOD.en)[2]);
 const mlogToday = () => { const p = P(); if (!p.mlog) p.mlog = {}; if (!p.mlog[T]) p.mlog[T] = []; return p.mlog[T]; };
 const missionDone = id => mlogToday().includes(id);
 function toggleMission(id){

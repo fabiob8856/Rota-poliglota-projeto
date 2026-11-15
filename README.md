@@ -1,9 +1,9 @@
-# Rota Poliglota
+# Projeto Hermes
 
 Guia de estudo de idiomas (inglês, espanhol, francês, russo, turco e árabe), do A1 ao C2, como programa para Windows.
 
 ## Instalar
-Baixe o `Rota-Poliglota-Setup-x.y.z.exe` na página **Releases** deste repositório e execute. O programa se atualiza sozinho: ao abrir, ele procura uma versão nova, baixa em segundo plano e pergunta se quer reiniciar para atualizar. Seu progresso (guardado no próprio programa) é mantido.
+Baixe o `Projeto-Hermes-Setup-x.y.z.exe` na página **Releases** deste repositório e execute. O programa se atualiza sozinho: ao abrir, ele procura uma versão nova, baixa em segundo plano e pergunta se quer reiniciar para atualizar. Seu progresso (guardado no próprio programa) é mantido.
 
 ## Como o projeto é organizado
 - `src/` — código-fonte do app (HTML/CSS/JS em partes). `node tools/build.js` junta tudo em `app/index.html`.

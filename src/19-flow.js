@@ -145,7 +145,8 @@ function renderStep(){
     } else {
       h += `<div class="stpanel"><b>${state === "rev" ? "Hora de revisar" : "Quando terminar as atividades"}</b><p class="note">${state === "rev" ? "Revise esta etapa e escolha o que fazer agora:" : "Escolha se conclui de vez ou quando quer revisar:"}</p>${choiceHtml()}</div>`;
     }
-    body.innerHTML = h;
+    if (state !== "lock" && !task) h = h.replace(/(<div class="stpanel)/, kitHtmlPlaceholder => stKitHtml(lvl, k, st) + kitHtmlPlaceholder);
+    body.innerHTML = h; if (state !== "lock") stKitWire(body);
     const un = document.getElementById("stUndo"); if (un) un.onclick = () => { delete p.steps[sk(lvl,k)]; const r = flowRecW(p,lvl,k); r.status = ""; r.due = ""; afterChange(); renderStep(); };
     body.querySelectorAll("[data-conc]").forEach(b => b.onclick = () => stConclude(+b.dataset.conc));
     body.querySelectorAll("[data-concc]").forEach(b => b.onclick = () => { const n = Math.round(+(body.querySelector(".stcn") || {}).value); if (n >= 1 && n <= 365) stConclude(n); else toast("Digite de 1 a 365 dias."); });

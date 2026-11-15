@@ -100,7 +100,7 @@ function renderExercises(){
       return `<div class="exunit" data-u="${u.id}">
         <div class="exunithead"><b>${esc(u.title)}</b>${dueBadge}<span class="exprog">${done ? "✓" : "0/"+total}</span></div>
         <p class="exlead">${esc(u.lead)}</p>
-        <div class="exexpl">${u.expl}</div>
+        ${u.fig ? `<figure class="exfig">${u.fig.html}<figcaption>${esc(u.fig.cap)}</figcaption></figure>` : ""}<div class="exexpl">${u.expl}</div>
         ${u.vid ? `<a class="exvid" href="https://www.youtube.com/results?search_query=${encodeURIComponent(u.vid)}" target="_blank" rel="noopener">▶ Ver vídeo explicando esse tema</a>` : ""}
         <ol class="exlist">${u.items.map((it,i) => exItemHtml(u,it,i,p,done)).join("")}</ol>
         <div class="exdonearea" data-u="${u.id}"></div>
@@ -118,7 +118,7 @@ function exItemHtml(u,it,i,p,unitDone){
       return `<button type="button" class="exopt${extra}" data-oi="${oi}"${graded?" disabled":""}>${esc(o)}</button>`;
     }).join("");
     const fb = graded ? (st.ok ? "Certo!" : `Resposta certa: ${esc(it.opts[it.a])}`) : "";
-    return `<li class="exit ${cls}" data-id="${id}"><div class="exq">${esc(it.q)}</div>${exSayBtn(it)}
+    return `<li class="exit ${cls}" data-id="${id}"><div class="exq">${esc(it.q)}</div>${it.img ? `<div class="eximg">${it.img}</div>` : ""}${exSayBtn(it)}
       <div class="exopts">${opts}</div>
       <div class="exfb ${cls}">${fb}</div></li>`;
   }
@@ -144,13 +144,13 @@ function exItemHtml(u,it,i,p,unitDone){
       <div class="exfb ${cls}">${fb}</div></li>`;
   }
   const fb = graded ? (st.ok ? "Certo!" : `Resposta certa: ${esc(it.a[0])}`) : "";
-  return `<li class="exit ${cls}" data-id="${id}"><div class="exq">${esc(it.q)}</div>${exSayBtn(it)}
+  return `<li class="exit ${cls}" data-id="${id}"><div class="exq">${esc(it.q)}</div>${it.img ? `<div class="eximg">${it.img}</div>` : ""}${exSayBtn(it)}
     <div class="exrow"><input type="text" class="exinput" autocomplete="off" spellcheck="false" placeholder="Escreva aqui..."${graded?" disabled":""}></div>
     ${it.hint ? `<div class="exhint">${esc(it.hint)}</div>` : ""}
     <div class="exfb ${cls}">${fb}</div></li>`;
 }
-function exSayBtn(it){ return it.say ? `<span class="exsayrow"><button type="button" class="exsay" data-say="${esc(it.say)}" aria-label="Ouvir em inglês">🔊 Ouvir</button></span>` : ""; }
-function exVoices(){ try { return speechSynthesis.getVoices().filter(v => /^en([-_]|$)/i.test(v.lang)); } catch (x) { return []; } }
+function exSayBtn(it){ return it.say ? `<span class="exsayrow"><button type="button" class="exsay" data-say="${esc(it.say)}" aria-label="Ouvir">🔊 Ouvir</button></span>` : ""; }
+function exVoices(){ try { const lc = S.lang || "en"; return speechSynthesis.getVoices().filter(v => new RegExp("^" + lc + "([-_]|$)", "i").test(v.lang)); } catch (x) { return []; } }
 function exVoiceScore(v){ const n = v.name; let sc = 0;
   if (/natural|neural|premium|enhanced/i.test(n)) sc += 100;
   if (/online/i.test(n)) sc += 20;
@@ -163,11 +163,11 @@ function exPickVoice(){ const vs = exVoices().sort((a,b) => exVoiceScore(b) - ex
   let saved = ""; try { saved = localStorage.getItem("rp-voice") || ""; } catch (x) {}
   return vs.find(v => v.name === saved) || vs[0]; }
 const EX_LET = {a:"ay",b:"bee",c:"see",d:"dee",e:"ee",f:"eff",g:"gee",h:"aitch",i:"eye",j:"jay",k:"kay",l:"el",m:"em",n:"en",o:"oh",p:"pea",q:"cue",r:"are",s:"ess",t:"tea",u:"you",v:"vee",w:"double you",x:"ex",y:"why",z:"zee"};
-function exSayText(t){ const x = String(t).trim(); if (/^[A-Za-z](\s[A-Za-z])*$/.test(x)) return x.split(" ").map(c => EX_LET[c.toLowerCase()]).join(", "); return x; }
+function exSayText(t){ const x = String(t).trim(); if (S.lang === "en" && /^[A-Za-z](\s[A-Za-z])*$/.test(x)) return x.split(" ").map(c => EX_LET[c.toLowerCase()]).join(", "); return x; }
 let exAud = null;
 function exSpeak(text, cb){
   const key = exSayText(text);
-  if (typeof EX_AUDIO !== "undefined" && EX_AUDIO[key]) { try { if (exAud) exAud.pause(); exAud = new Audio(EX_AUDIO[key]); exAud.play().then(() => cb && cb(true)).catch(() => exSpeakTTS(text, cb)); return; } catch (x) {} }
+  if (S.lang === "en" && typeof EX_AUDIO !== "undefined" && EX_AUDIO[key]) { try { if (exAud) exAud.pause(); exAud = new Audio(EX_AUDIO[key]); exAud.play().then(() => cb && cb(true)).catch(() => exSpeakTTS(text, cb)); return; } catch (x) {} }
   exSpeakTTS(text, cb); }
 function exSpeakTTS(text, cb){ try {
   const go = () => { const v = exPickVoice(); if (!v) { cb && cb(false); return; }
@@ -178,7 +178,7 @@ function exSpeakTTS(text, cb){ try {
   } catch (x) { cb && cb(false); } }
 try { speechSynthesis.getVoices(); } catch (x) {}
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(".exsay"); if (!b) return;
-  exSpeak(b.dataset.say, ok => { if (!ok) b.textContent = "Sem voz em inglês neste navegador"; }); });
+  exSpeak(b.dataset.say, ok => { if (!ok) b.textContent = "Sem voz em " + CL().name.toLowerCase() + " neste navegador"; }); });
 function exNorm(s){
   let x = String(s).toLowerCase().trim().replace(/^[¿¡]+/,"").replace(/[.!?؟]+$/,"").replace(/\s+/g," ");
   if (["es","fr","tr"].includes(S.lang)) x = x.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i").replace(/ß/g,"ss");

@@ -1,7 +1,7 @@
 {
   "name": "rota-poliglota",
-  "productName": "Rota Poliglota",
-  "version": "1.0.0",
+  "productName": "Projeto Hermes",
+  "version": "1.5.0",
   "description": "Guia de estudo de idiomas (inglês, espanhol, francês, russo, turco e árabe) do A1 ao C2.",
   "main": "electron/main.js",
   "author": "Fábio",
@@ -18,12 +18,12 @@
   "devDependencies": { "electron": "^33.2.1", "electron-builder": "^25.1.8" },
   "build": {
     "appId": "com.fabio.rotapoliglota",
-    "productName": "Rota Poliglota",
-    "files": ["electron/**", "app/**", "package.json"],
+    "productName": "Projeto Hermes",
+    "files": ["electron/**", "app/**", "build/icon.png", "package.json"],
     "directories": { "buildResources": "build", "output": "dist" },
-    "artifactName": "Rota-Poliglota-Setup-${version}.${ext}",
+    "artifactName": "Projeto-Hermes-Setup-${version}.${ext}",
     "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "build/icon.png" },
-    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "perMachine": false, "createDesktopShortcut": true, "createStartMenuShortcut": true, "shortcutName": "Rota Poliglota", "deleteAppDataOnUninstall": false },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "perMachine": false, "createDesktopShortcut": true, "createStartMenuShortcut": true, "shortcutName": "Projeto Hermes", "deleteAppDataOnUninstall": false },
     "publish": [{ "provider": "github", "owner": "fabiob8856", "repo": "Rota-poliglota-projeto", "releaseType": "release" }]
   }
 }

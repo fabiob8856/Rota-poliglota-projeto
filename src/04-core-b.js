@@ -26,7 +26,7 @@ function renderHead(){
     const b = document.createElement("button");
     b.className = "lang"; b.type = "button"; b.setAttribute("aria-pressed", S.lang === id);
     b.innerHTML = FLAGS[id] + `<span>${esc(LANG[id].name)}</span>`;
-    b.onclick = () => { if (S.lang === id) return; tmStop(); S.lang = id; pend = null; view = P().cfg.level; updateLog(); save(); renderConfig(); checkProgress(); renderAll(); };
+    b.onclick = () => { if (S.lang === id) return; tmStop(); S.lang = id; document.querySelectorAll(".exview").forEach(v => { v.hidden = true; }); { const ml = document.getElementById("mainLayout"); if (ml) ml.hidden = false; } try { exSession = []; exStage = "list"; exStepMode = false; stPracKey = ""; } catch (_) {} pend = null; view = P().cfg.level; updateLog(); save(); renderConfig(); checkProgress(); renderAll(); };
     nav.appendChild(b);
   });
 }
@@ -132,7 +132,7 @@ function renderToday(){
     fx += `</ul>`;
   }
   if (!study) {
-    h += `<div class="rest"><b>Hoje é dia de descanso</b> nos seus dias de estudo. Se quiser algo leve, faça uma missão abaixo ou veja um episódio de série com legenda no idioma.</div>
+    h += `<div class="rest">${(window.immI && immI("rest", {}, "")) || '<b>Hoje é dia de descanso</b> nos seus dias de estudo. Se quiser algo leve, faça uma missão abaixo ou veja um episódio de série com legenda no idioma.'}</div>
       <button class="btnp" type="button" id="extraBtn">Estudar hoje mesmo assim</button>${fx}`;
   } else {
     const pl = pl0, tot = pl.reduce((a,b)=>a+b.m,0);

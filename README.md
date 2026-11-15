@@ -21,3 +21,15 @@ Isso sobe o código, cria a tag `v1.1.0` e o GitHub Actions gera o instalador e 
 npm install
 npm start
 ```
+
+## Gravações reais do Tatoeba (voz humana)
+
+O botão 🔊 toca a gravação do Tatoeba quando a frase está na lista; se não houver internet ou gravação, usa a voz do aparelho.
+Para gerar a lista de frases (uma vez, no seu computador):
+
+```
+node tools/tatoeba.js          # baixa as listas do Tatoeba, filtra licenças livres e escreve src/29g-tatoeba-data.js
+node tools/build.js            # reconstrói o aplicativo
+```
+
+Opções: `--per 360` (frases por idioma), `--nc` (aceita também gravações NC/ND). Os créditos (autor e licença) aparecem em cada unidade "Ouça e escreva".

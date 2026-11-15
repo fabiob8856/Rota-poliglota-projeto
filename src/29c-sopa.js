@@ -35,7 +35,7 @@
     const rtl = lang === "ar", r = rnd(seed + 7);
     const box = document.createElement("div"); box.className = "sopa"; box.id = "sopaBlock";
     box.innerHTML = `<h3>🔤 Sopa de letrinhas</h3>
-      <div class="exexpl"><div class="exintro2"><b>Como funciona</b><p>As letras de cada palavra estão embaralhadas. Arraste uma letra para cima de outra (ou toque em duas letras) para trocá-las de lugar até formar a palavra do idioma que você estuda. A dica em português mostra o sentido.</p></div></div>` +
+      <div class="exexpl"><div class="exintro2"><b>Como funciona</b><p>As letras de cada palavra estão embaralhadas. <b>Clique em uma letra com o mouse e segure</b>: ela se solta e fica flutuando junto do cursor. Arraste até o lugar certo e <b>solte o botão</b> para encaixar. Repita até formar a palavra do idioma que você estuda. No celular, você também pode tocar em duas letras para trocá-las de lugar. A dica em português mostra o sentido.</p></div></div>` +
       words.map((x, i) => `<div class="sopaw" data-i="${i}"><div class="sopah">${esc(x.hint)}</div><div class="sopat" ${rtl ? 'dir="rtl"' : ""}>${shuffled(x.w, r).map(c => `<span class="sopal">${esc(c)}</span>`).join("")}</div><div class="sopar"></div></div>`).join("") +
       `<button type="button" class="btnp" id="sopaCheck">Conferir</button> <button type="button" class="btng" id="sopaNew">Outras palavras</button> <span id="sopaMsg" class="note"></span>`;
     host.appendChild(box);
@@ -44,13 +44,24 @@
     box.querySelectorAll(".sopat").forEach(row => {
       const swap = (a, b) => { if (a === b) return; const ph = document.createElement("span"); row.replaceChild(ph, a); row.replaceChild(a, b); row.replaceChild(b, ph); };
       let drag = null;
-      row.addEventListener("pointerdown", e => { const t = e.target.closest(".sopal"); if (!t || row.dataset.ok) return; drag = {t, moved: false}; t.classList.add("sel"); try { row.setPointerCapture(e.pointerId); } catch(_){} });
-      row.addEventListener("pointermove", e => { if (!drag) return; const o = document.elementFromPoint(e.clientX, e.clientY), t = o && o.closest && o.closest(".sopal");
-        if (t && t !== drag.t && row.contains(t)){ swap(drag.t, t); drag.moved = true; } });
-      row.addEventListener("pointerup", () => { if (!drag) return; const t = drag.t; t.classList.remove("sel");
-        if (!drag.moved){ if (sel && sel !== t && row.contains(sel)){ swap(sel, t); sel.classList.remove("sel"); sel = null; } else if (sel === t){ sel = null; } else { if (sel) sel.classList.remove("sel"); sel = t; t.classList.add("sel"); } }
-        else if (sel){ sel.classList.remove("sel"); sel = null; }
-        drag = null; });
+      const clearSel = () => { if (sel){ sel.classList.remove("sel"); sel = null; } };
+      row.addEventListener("pointerdown", e => { const t = e.target.closest(".sopal"); if (!t || row.dataset.ok) return; e.preventDefault();
+        const r = t.getBoundingClientRect(); drag = {t, x: e.clientX, y: e.clientY, dx: e.clientX - r.left, dy: e.clientY - r.top, moved: false, ghost: null};
+        try { row.setPointerCapture(e.pointerId); } catch(_){} });
+      row.addEventListener("pointermove", e => { if (!drag) return;
+        if (!drag.moved){ if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 5) return;
+          drag.moved = true; clearSel(); const r = drag.t.getBoundingClientRect(), g = drag.t.cloneNode(true);
+          g.className = "sopal sopaghost"; g.style.width = r.width + "px"; g.style.height = r.height + "px"; document.body.appendChild(g); drag.ghost = g; drag.t.classList.add("ph"); }
+        const g = drag.ghost; g.style.left = (e.clientX - drag.dx) + "px"; g.style.top = (e.clientY - drag.dy) + "px";
+        g.style.display = "none"; const o = document.elementFromPoint(e.clientX, e.clientY); g.style.display = "";
+        const t2 = o && o.closest && o.closest(".sopal:not(.sopaghost)");
+        if (t2 && t2 !== drag.t && row.contains(t2)){ const kids = Array.from(row.children); if (kids.indexOf(drag.t) < kids.indexOf(t2)) row.insertBefore(drag.t, t2.nextSibling); else row.insertBefore(drag.t, t2); } });
+      const end = () => { if (!drag) return; const d = drag; drag = null;
+        if (d.moved){ const g = d.ghost, r = d.t.getBoundingClientRect(); g.classList.add("land"); g.style.left = r.left + "px"; g.style.top = r.top + "px";
+          setTimeout(() => { g.remove(); d.t.classList.remove("ph"); }, 140); return; }
+        const t = d.t;
+        if (sel && sel !== t && row.contains(sel)){ swap(sel, t); clearSel(); } else if (sel === t){ clearSel(); } else { clearSel(); sel = t; t.classList.add("sel"); } };
+      row.addEventListener("pointerup", end); row.addEventListener("pointercancel", end);
     });
     box.querySelector("#sopaCheck").onclick = () => {
       box.querySelectorAll(".sopaw").forEach(w => { const i = +w.dataset.i, row = w.querySelector(".sopat"), res = w.querySelector(".sopar");
@@ -82,7 +93,7 @@
     const el = document.getElementById("sopaCard"); if (!el) return;
     const n = pool(S.lang).length;
     el.innerHTML = `<div class="eyebrow">Pratique</div><h2 class="cardt"><span class="ini">S</span>opa de letrinhas</h2>
-      <p class="intro">Palavras do idioma que você estuda com as letras fora de ordem. Arraste as letras (ou toque em duas) para formar a palavra certa. Cada rodada traz 5 palavras novas, e você pode seguir rodada após rodada, sem fim. Terminar uma rodada marca a missão "sopa de letrinhas" do dia.</p>
+      <p class="intro">Palavras do idioma que você estuda com as letras fora de ordem. Clique em uma letra, segure e arraste até o lugar certo; solte para encaixar. Assim você forma a palavra certa. Cada rodada traz 5 palavras novas, e você pode seguir rodada após rodada, sem fim. Terminar uma rodada marca a missão "sopa de letrinhas" do dia.</p>
       <div class="exintrostat">${n} palavras disponíveis neste idioma</div>
       <button type="button" class="btnp" id="sopaStart"${n ? "" : " disabled"}>Começar sopa de letrinhas</button>`;
     const b = document.getElementById("sopaStart"); if (b) b.onclick = openView;

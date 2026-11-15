@@ -55,9 +55,15 @@ function kitPick(lvl, k, area, shuffle){
   const tt = (typeof lvData === "function" && lvData(lvl).steps[k-1] || {}).t || "";
   const pref = /apresent|perguntas básicas|frases sobre|conversa|entrevista/i.test(tt) ? pool.filter(u => /Cumprimentos|família|ajuda|Entrevista|Conversa|Apresent|conselhos|opinião|Opinião/i.test(u.dgt || u.title)) : [];
   if (pref.length >= 1) pool = pref.length >= 2 ? pref : pref.concat(pool.filter(u => !pref.includes(u)));
-  if (shuffle) return exShuffle(pool).slice(0, 2);
   let h = 0; for (const c of S.lang + lvl + k) h = (h*31 + c.charCodeAt(0)) | 0; h = Math.abs(h);
-  return [pool[h % pool.length], pool[(h + 1) % pool.length]].filter((u, i, a) => a.indexOf(u) === i);
+  const extra = () => { /* conjugação (etapas de verbos/tempos) ou pares de palavras (vocabulário) */
+    if (/fala|escuta|prova|pron/i.test(area)) return [];
+    const B = EX_BOOKS[S.lang], verb = /verb|conjug|passad|presente|futur|tempo|pret[eé]r|imperf|condicion|subjun|aoristo|aspecto|gram/i.test(tt + " " + area);
+    const ex = B.units.filter(u => u.lvl === lvl && (verb ? /^cj-/ : /^mp-/).test(u.id)); if (!ex.length) return [];
+    const pick = shuffle ? ex[Math.floor(Math.random() * ex.length)] : ex[(h + k) % ex.length];
+    return [pick]; };
+  if (shuffle) return exShuffle(pool).slice(0, 2).concat(extra());
+  return [pool[h % pool.length], pool[(h + 1) % pool.length]].filter((u, i, a) => a.indexOf(u) === i).concat(extra());
 }
 function stKitHtml(lvl, k, st){
   const area = flowAreaName(lvl, k), key = S.lang + "|" + lvl + "|" + k;

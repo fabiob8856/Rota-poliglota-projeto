@@ -172,7 +172,7 @@ function drawBoard(id){
       E("circle",{cx:c.x,cy:c.y,r:12.3,fill:"none",stroke:done ? T.goldLt : s.c,"stroke-width":2.4},gk);
       if (done) E("path",{d:`M${c.x-5.5},${c.y} l3.8,4 l7.5,-8`,fill:"none",stroke:"#FAF3E0","stroke-width":2.8,"stroke-linecap":"round","stroke-linejoin":"round"},gk);
       else E("text",{x:c.x,y:c.y+5,"text-anchor":"middle",class:"sv","font-size":15,"font-weight":700,fill:T.ink},gk,k);
-      const lines = wrapLines(step.t, 24), lh = 19, by = c.y + 6 - (lines.length-1)*lh/2;
+      const lines = wrapLines(window.immT ? immT(step.t) : step.t, 24), lh = 19, by = c.y + 6 - (lines.length-1)*lh/2;
       const tx = E("text",{x:c.x + side*26, y:by, "text-anchor": side > 0 ? "start" : "end", class:"sv", "font-size":17.5, "font-weight":done ? 400 : 600, "font-style":done ? "italic" : "normal", fill:done ? "#5C4A36" : T.ink},gk);
       lines.forEach((ln, i) => E("tspan",{x:c.x + side*26, dy: i ? lh : 0},tx, ln));
       const tw = Math.max(...lines.map(l => l.length))*8.3 + 50;

@@ -18,7 +18,7 @@ function PKBUILD(PKDATA, PFX, OFF){
         const n = si + 1 + OFF, id = x => `${PFX}-${lang}-${lvl}-s${n}-${x}`, ttl = x => `${lvl} · Cena ${n}: ${sc.t} · ${x}`;
         const expl = "<ol>" + rows.map(r => `<li><b>${esc(r.plain)}</b><br><small>${esc(r.pt)}</small></li>`).join("") + "</ol>";
         /* a) completar digitando */
-        B.units.push({id:id("a"), title:ttl("Complete"), lead:"Leia a cena e escreva a palavra que falta." + note, expl:"Estas são as frases da cena. Leia, repare nas palavras e depois complete as lacunas." + expl, lvl,
+        B.units.push({_rows:rows.map(r => ({pt:r.pt, plain:r.plain})), id:id("a"), title:ttl("Complete"), lead:"Leia a cena e escreva a palavra que falta." + note, expl:"Estas são as frases da cena. Leia, repare nas palavras e depois complete as lacunas." + expl, lvl,
           items: rows.map(r => { const ans = [r.word]; if (/ё/.test(r.word)) ans.push(r.word.replace(/ё/g, "е"));
             return {t:"text", q:`Complete: ${r.blank}  —  ${r.pt}`, a:ans, hint:`Começa com “${Array.from(r.word)[0]}”`}; })});
         /* b) montar a frase */

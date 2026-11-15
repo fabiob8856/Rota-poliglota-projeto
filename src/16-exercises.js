@@ -112,13 +112,14 @@ function exItemHtml(u,it,i,p,unitDone){
   const id = exItemId(u.id,i), st = p.exlog[id], graded = !!unitDone && !!st;
   const cls = graded ? (st.ok ? "ok" : "bad") : "";
   if (it.t === "choice"){
+    const tg = exOptsTarget(it);
     const opts = it.opts.map((o,oi) => {
       let extra = "";
       if (graded){ if (oi === it.a) extra = " correct"; else if (!st.ok && exAns[id] === oi) extra = " wrong"; }
-      return `<button type="button" class="exopt${extra}" data-oi="${oi}"${graded?" disabled":""}>${esc(o)}</button>`;
+      return `<button type="button" class="exopt${extra}" data-oi="${oi}"${tg ? ' data-spk="1"' : ""}${graded?" disabled":""}>${esc(o)}</button>`;
     }).join("");
     const fb = graded ? (st.ok ? "Certo!" : `Resposta certa: ${esc(it.opts[it.a])}`) : "";
-    return `<li class="exit ${cls}" data-id="${id}"><div class="exq">${esc(it.q)}</div>${it.img ? `<div class="eximg">${it.img}</div>` : ""}${exSayBtn(it)}
+    return `<li class="exit ${cls}" data-id="${id}"><div class="exq">${esc(it.q)}</div>${it.img ? `<div class="eximg">${it.img}</div>` : ""}${exSayBtn(it, graded)}
       <div class="exopts">${opts}</div>
       <div class="exfb ${cls}">${fb}</div></li>`;
   }
@@ -133,6 +134,16 @@ function exItemHtml(u,it,i,p,unitDone){
       <div class="exopts exwords"${S.lang === "ar" ? ' dir="rtl"' : ""}>${words}</div>
       <div class="exfb ${cls}">${fb}</div></li>`;
   }
+  if (it.t === "match"){
+    const stt = exAns[id] || {done:[], err:0, selL:null, selR:null}, rtlL = S.lang === "ar" || S.lang === "ru" && false ? ' dir="rtl"' : "";
+    const doneSet = new Set(stt.done), allDone = doneSet.size === it.pairs.length;
+    const col = (side, perm) => perm.map(pi => { const txt = it.pairs[pi][side], dn = doneSet.has(pi), sel = (side === 0 ? stt.selL : stt.selR) === pi;
+      return `<button type="button" class="exopt exmt${dn ? " matched" : ""}${sel ? " sel" : ""}" data-side="${side}" data-pi="${pi}"${dn || graded ? " disabled" : ""}>${esc(txt)}</button>`; }).join("");
+    const fb = graded ? (st.ok ? "Certo!" : `${stt.err} erro(s) ao ligar os pares`) : (allDone ? `Todos ligados · ${stt.err} erro(s)` : "");
+    return `<li class="exit ${cls}" data-id="${id}"><div class="exq">${esc(it.q)}</div>
+      <div class="exmatch"><div class="exmcol"${S.lang === "ar" ? ' dir="rtl"' : ""}>${col(0, it.pl)}</div><div class="exmcol">${col(1, it.pr)}</div></div>
+      <div class="exfb ${cls}">${fb}</div></li>`;
+  }
   if (it.t === "order"){
     const cur = exAns[id] || [], rtl = S.lang === "ar" ? ' dir="rtl"' : "";
     const built = cur.map(wi => `<button type="button" class="exopt exw exbuiltw" data-wi="${wi}"${graded?" disabled":""}>${esc(it.words[wi])}</button>`).join(" ");
@@ -141,15 +152,43 @@ function exItemHtml(u,it,i,p,unitDone){
     return `<li class="exit ${cls}" data-id="${id}"><div class="exq">${esc(it.q)}</div>
       <div class="exbuilt"${rtl}>${built || '<span class="exbuilthint">Toque nas palavras na ordem certa…</span>'}</div>
       <div class="exopts exwords"${rtl}>${tiles}</div>
-      <div class="exfb ${cls}">${fb}</div></li>`;
+      <div class="exfb ${cls}">${fb}</div>${graded ? exSayBtn(it, true) : ""}</li>`;
   }
   const fb = graded ? (st.ok ? "Certo!" : `Resposta certa: ${esc(it.a[0])}`) : "";
-  return `<li class="exit ${cls}" data-id="${id}"><div class="exq">${esc(it.q)}</div>${it.img ? `<div class="eximg">${it.img}</div>` : ""}${exSayBtn(it)}
+  return `<li class="exit ${cls}" data-id="${id}"><div class="exq">${esc(it.q)}</div>${it.img ? `<div class="eximg">${it.img}</div>` : ""}${exSayBtn(it, graded)}
     <div class="exrow"><input type="text" class="exinput" autocomplete="off" spellcheck="false" placeholder="Escreva aqui..."${graded?" disabled":""}></div>
     ${it.hint ? `<div class="exhint">${esc(it.hint)}</div>` : ""}
     <div class="exfb ${cls}">${fb}</div></li>`;
 }
-function exSayBtn(it){ return it.say ? `<span class="exsayrow"><button type="button" class="exsay" data-say="${esc(it.say)}" aria-label="Ouvir">🔊 Ouvir</button></span>` : ""; }
+/* Escolha com opções no idioma estudado: ao tocar numa opção ela é pronunciada (não revela se está certa) */
+function exOptsTarget(it){
+  return false; /* desligado: tocar na opção não fala mais */
+  if (it.t !== "choice") return false; const q = String(it.q || "");
+  if (/\bcome[çc]a\b|\bsom\b|\bsoa\b|letra|significado|significa:|^Leia:|^Ouça|O que significa|feminina|masculina/i.test(q) && !/^Qual frase significa/.test(q)) return false;
+  return /^(Qual frase significa|Como se diz|Como dizer|Qual palavra em|O que é isto|Qual frase está|Qual está correta|Qual é a grafia|“[^”]+”\s*:)/.test(q) || /:\s*$/.test(q) || /_{2,}|^Complete:/.test(q);
+}
+/* Quando faz sentido ouvir: só onde a gravação NÃO entrega a resposta.
+   antes de responder: itens com áudio próprio (ditado) e “Qual é o significado de ‘palavra’” (a palavra já está na tela);
+   depois de conferir: a resposta certa (palavra, frase completa ou frase ordenada). */
+function exListenText(it, graded){
+  if (it.say) return it.say;
+  return ""; /* desligado: só itens com áudio próprio (ditado) mostram o botão */
+  const q = String(it.q || ""); let m;
+  if (it.t === "choice"){
+    if ((m = /^Qual é o significado de “([^”]+)”/.exec(q))) return m[1];
+    if (graded && (/^Como se diz “/.test(q) || /^Qual palavra em /.test(q))) return it.opts[it.a];
+    return "";
+  }
+  if (it.t === "order") return graded ? it.words.join(" ") : "";
+  if ((it.t === "text" || it.t === "type") && graded){
+    if (/^Complete:/.test(q)){ const sen = q.replace(/^Complete:\s*/, "").split(/\s+—\s+/)[0]; if ((sen.match(/_+/g) || []).length === 1) return sen.replace(/_+/, it.a[0]); return ""; }
+    if (/^Escreva em /.test(q)) return it.a[0];
+  }
+  return "";
+}
+function exSayBtn(it, graded){ const t = exListenText(it, graded); if (!t) return "";
+  const lbl = it.say ? "🔊 Ouvir" : graded ? "🔊 Ouvir a resposta" : "🔊 Ouvir a palavra";
+  return `<span class="exsayrow"><button type="button" class="exsay" data-say="${esc(t)}" aria-label="Ouvir">${lbl}</button></span>`; }
 function exVoices(){ try { const lc = S.lang || "en"; return speechSynthesis.getVoices().filter(v => new RegExp("^" + lc + "([-_]|$)", "i").test(v.lang)); } catch (x) { return []; } }
 function exVoiceScore(v){ const n = v.name; let sc = 0;
   if (/natural|neural|premium|enhanced/i.test(n)) sc += 100;
@@ -167,15 +206,27 @@ function exSayText(t){ const x = String(t).trim(); if (S.lang === "en" && /^[A-Z
 let exAud = null;
 function exSpeak(text, cb){
   const key = exSayText(text);
+  const tid = window.TATO_FIND ? window.TATO_FIND(S.lang, text) : null; /* gravação real (Tatoeba), com voz sintética de reserva */
+  if (tid){ let fell = false; const fb = () => { if (fell) return; fell = true; exSpeakTTS(text, cb); };
+    try { if (exAud) exAud.pause(); exAud = new Audio("https://tatoeba.org/audio/download/" + tid); exAud.onerror = fb; exAud.play().then(() => cb && cb(true)).catch(fb); return; } catch (x) { fb(); return; } }
   if (S.lang === "en" && typeof EX_AUDIO !== "undefined" && EX_AUDIO[key]) { try { if (exAud) exAud.pause(); exAud = new Audio(EX_AUDIO[key]); exAud.play().then(() => cb && cb(true)).catch(() => exSpeakTTS(text, cb)); return; } catch (x) {} }
   exSpeakTTS(text, cb); }
+const EX_BCP = {en:"en-US", es:"es-ES", fr:"fr-FR", ru:"ru-RU", tr:"tr-TR", ar:"ar-SA"};
 function exSpeakTTS(text, cb){ try {
-  const go = () => { const v = exPickVoice(); if (!v) { cb && cb(false); return; }
-    const u = new SpeechSynthesisUtterance(exSayText(text)); u.voice = v; u.lang = v.lang; u.rate = .8; u.pitch = 1;
-    speechSynthesis.cancel(); speechSynthesis.speak(u); cb && cb(true); };
+  const go = () => { const v = exPickVoice();
+    const u = new SpeechSynthesisUtterance(exSayText(text)); if (v) { u.voice = v; u.lang = v.lang; } else u.lang = EX_BCP[S.lang] || "en-US"; /* sem voz listada: deixa o navegador escolher pela língua */
+    u.rate = .8; u.pitch = 1; u.volume = 1;
+    let started = false; u.onstart = () => { started = true; }; u.onerror = () => { if (!started) cb && cb(false); };
+    speechSynthesis.cancel(); try { speechSynthesis.resume(); } catch (x) {}
+    setTimeout(() => { speechSynthesis.speak(u); cb && cb(true); }, 60); };
   if (exVoices().length) go(); else { let done = false; const fin = () => { if (done) return; done = true; go(); };
-    speechSynthesis.onvoiceschanged = fin; setTimeout(fin, 1200); speechSynthesis.getVoices(); }
+    speechSynthesis.onvoiceschanged = fin; setTimeout(fin, 900); speechSynthesis.getVoices(); }
   } catch (x) { cb && cb(false); } }
+/* aviso curto quando o navegador não consegue falar */
+function exSpeakWarn(el){ let t = document.getElementById("exSpeakToast");
+  if (!t){ t = document.createElement("div"); t.id = "exSpeakToast"; t.style.cssText = "position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#2a1e14;color:#f9f2de;padding:10px 16px;border-radius:8px;z-index:9999;font-size:15px;max-width:90%;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.4)"; document.body.appendChild(t); }
+  t.textContent = "Este navegador não conseguiu falar em " + CL().name.toLowerCase() + ". Verifique o volume do aparelho e se há uma voz instalada nesse idioma.";
+  t.hidden = false; clearTimeout(t._h); t._h = setTimeout(() => { t.hidden = true; }, 4500); }
 try { speechSynthesis.getVoices(); } catch (x) {}
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(".exsay"); if (!b) return;
   exSpeak(b.dataset.say, ok => { if (!ok) b.textContent = "Sem voz em " + CL().name.toLowerCase() + " neste navegador"; }); });
@@ -190,6 +241,7 @@ function exAllAnswered(u){
     const id = exItemId(u.id,i);
     if (it.t === "choice" || it.t === "find") return exAns[id] !== undefined;
     if (it.t === "order") return (exAns[id] || []).length === it.words.length;
+    if (it.t === "match") return !!exAns[id] && exAns[id].done.length === it.pairs.length;
     const li = document.querySelector(`.exit[data-id="${id}"]`), inp = li && li.querySelector(".exinput");
     return inp && inp.value.trim() !== "";
   });
@@ -217,6 +269,9 @@ function finishUnit(u){
     if (it.t === "find"){
       ok = exAns[id] === it.a;
       li.querySelectorAll(".exopt").forEach(b => { const oi = +b.dataset.oi; b.disabled = true; b.classList.remove("sel"); if (oi === it.a) b.classList.add("correct"); else if (oi === exAns[id]) b.classList.add("wrong"); });
+    } else if (it.t === "match"){
+      ok = (exAns[id] ? exAns[id].err : 9) <= Math.max(1, Math.floor(it.pairs.length / 3));
+      li.querySelectorAll(".exopt").forEach(b => { b.disabled = true; });
     } else if (it.t === "order"){
       ok = (exAns[id] || []).map(wi => it.words[wi]).join(" ") === it.words.join(" ");
       li.querySelectorAll(".exopt").forEach(b => { b.disabled = true; });
@@ -237,7 +292,7 @@ function finishUnit(u){
     p.exlog[id] = {ok, t:T};
     li.classList.remove("ok","bad"); li.classList.add(ok?"ok":"bad");
     const fb = li.querySelector(".exfb");
-    fb.textContent = ok ? "Certo!" : (it.t === "order" ? `Frase certa: ${it.words.join(" ")}` : it.t === "find" ? `O erro estava em "${it.words[it.a]}" → ${it.fix}` : `Resposta certa: ${it.t==="choice"?it.opts[it.a]:it.a[0]}`);
+    fb.textContent = ok ? "Certo!" : (it.t === "match" ? `${(exAns[id] || {}).err || 0} erro(s) ao ligar os pares` : it.t === "order" ? `Frase certa: ${it.words.join(" ")}` : it.t === "find" ? `O erro estava em "${it.words[it.a]}" → ${it.fix}` : `Resposta certa: ${it.t==="choice"?it.opts[it.a]:it.a[0]}`);
     fb.className = "exfb " + (ok?"ok":"bad");
   });
   if (!exStepMode){
@@ -282,6 +337,17 @@ function wireExItem(u,it,i){
       exAns[id] = +btn.dataset.oi;
       renderDoneArea(u);
     });
+  } else if (it.t === "match"){
+    const redrawM = () => { const nl = document.createElement("div"); nl.innerHTML = exItemHtml(u, it, i, P(), false); li.innerHTML = nl.firstElementChild.innerHTML; bindM(); renderDoneArea(u); };
+    const bindM = () => li.querySelectorAll(".exmt").forEach(b => b.onclick = () => {
+      const stt = exAns[id] = exAns[id] || {done:[], err:0, selL:null, selR:null}, side = +b.dataset.side, pi = +b.dataset.pi;
+      if (side === 0) stt.selL = stt.selL === pi ? null : pi; else stt.selR = stt.selR === pi ? null : pi;
+      if (stt.selL != null && stt.selR != null){
+        if (stt.selL === stt.selR) stt.done.push(stt.selL); else { stt.err++; li.classList.add("shake"); setTimeout(() => li.classList.remove("shake"), 350); }
+        stt.selL = stt.selR = null;
+      }
+      redrawM(); });
+    bindM();
   } else if (it.t === "order"){
     const redraw = () => { const nl = document.createElement("div"); nl.innerHTML = exItemHtml(u, it, i, P(), false); const fresh = nl.firstElementChild; li.innerHTML = fresh.innerHTML; bind(); renderDoneArea(u); };
     const bind = () => {

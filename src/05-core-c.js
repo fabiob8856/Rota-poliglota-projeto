@@ -7,6 +7,7 @@ function renderConfig(){
     <div class="field"><label for="cLv">Meu nível agora</label><select id="cLv">${LEVELS.map(L => `<option value="${L.id}"${L.id===p.cfg.level?" selected":""}>${L.id} · ${esc(L.name)} (${esc(L.rank)})</option>`).join("")}</select></div>
     <div class="fc" id="fc"></div>
     <label class="tktask" style="margin:10px 0"><input type="checkbox" id="cFab"${fabOn() ? " checked" : ""}> <span>Botão flutuante do baralho de revisão (criar, editar e adicionar cartões)</span></label>
+    <label class="tktask" style="margin:10px 0"><input type="checkbox" id="cImm"${S.imm !== false ? " checked" : ""}> <span>Imersão: interface no idioma estudado (a partir do B1)</span></label>
     <p class="note">Não sabe seu nível? Faça um teste gratuito (link nos Recursos) e escolha aqui. Cada idioma guarda o próprio progresso neste navegador.</p>
     <div class="field"><label for="bk">Backup do progresso</label>
       <div class="row"><button class="btng" type="button" id="bkCopy">Copiar código</button><button class="btng" type="button" id="bkRestore">Restaurar do código colado</button></div>
@@ -21,6 +22,7 @@ function renderConfig(){
     el.querySelectorAll(".dayt").forEach(x => x.setAttribute("aria-pressed", p.cfg.days.includes(+x.dataset.d)));
     save(); renderAll();
   });
+  document.getElementById("cImm").onchange = e => { S.imm = e.target.checked; save(); if (window.immPass) window.immPass(); };
   document.getElementById("cFab").onchange = e => { S.fab = e.target.checked; save(); fabSync(); };
   document.getElementById("cLv").onchange = e => { const nv = e.target.value; askLevelChange(nv, () => { p.cfg.level = nv; view = p.cfg.level; pend = null; updateLog(); save(); renderAll(); }, () => { e.target.value = p.cfg.level; }); };
   const msg = t => { document.getElementById("bkMsg").textContent = t; };

@@ -235,7 +235,7 @@ function closeRevView(){
 const fabOn = () => S.fab !== false;
 function fabInit(){
   if (document.getElementById("fabBtn")) return;
-  const b = document.createElement("button"); b.type = "button"; b.id = "fabBtn"; b.className = "fabbtn"; b.setAttribute("aria-label", "Baralho de revisão: criar, editar ou adicionar cartões"); b.title = "Baralho de revisão";
+  const b = document.createElement("button"); b.type = "button"; b.id = "fabBtn"; b.className = "fabbtn"; b.setAttribute("aria-label", "Baralho de revisão: jogar, criar, editar ou adicionar cartões"); b.title = "Baralho de revisão";
   b.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="6" y="3" width="13" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8" transform="rotate(8 12 11)"/><rect x="4" y="5" width="13" height="16" rx="2" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 10v6M7.5 13h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
   b.onclick = () => fabOpen("list");
   document.body.appendChild(b);
@@ -250,6 +250,16 @@ function fabInit(){
 function fabSync(){ const b = document.getElementById("fabBtn"); if (b) b.hidden = !fabOn(); }
 function fabClose(){ document.getElementById("fabOverlay").hidden = true; renderAll(); }
 let fabDelArm = null;
+/* ▶ Jogar: abre a mesma revisão do menu principal (Baralho de revisão), com as mesmas regras */
+function fabPlayDeck(id){
+  const deck = revDecks(P()).find(d => d.id === id); if (!deck) return;
+  document.getElementById("fabOverlay").hidden = true;
+  document.querySelectorAll(".exview").forEach(v => { v.hidden = true; });
+  document.getElementById("mainLayout").hidden = true;
+  document.getElementById("revView").hidden = false;
+  revOpenDeck(deck);
+  window.scrollTo({top:0, behavior:"instant" in window ? "instant" : "auto"});
+}
 function fabOpen(mode, id){
   const o = document.getElementById("fabOverlay"), body = document.getElementById("fabBody"), p = P(); o.hidden = false;
   const deck = id ? revDecks(p).find(d => d.id === id) : null;
@@ -261,16 +271,18 @@ function fabOpen(mode, id){
     body.innerHTML = `<div class="eyebrow">Baralho de revisão</div><h2 class="cardt"><span class="ini">B</span>aralhos</h2>
       <button type="button" class="btnp" id="fbNew" style="margin-bottom:12px">+ Criar baralho</button>
       ${decks.length ? `<ul class="fbdecks">${decks.map(d => { const c = revIsCustom(d), arm = fabDelArm === d.id;
+        const doneToday = revDoneToday(d, p), due = doneToday ? 0 : revDueCount(d, p), canPlay = !doneToday && due > 0;
+        const playBtn = canPlay ? `<button type="button" class="btnp" data-a="play" data-d="${d.id}">▶ Jogar · ${due} para hoje</button>` : `<button type="button" class="btng" disabled>${doneToday ? "Revisado hoje" : (d.cards.length ? "Em dia" : "Sem cartões")}</button>`;
         return `<li><div class="fbt"><b>${esc(d.title)}</b><small>${d.cards.length} cartõe${d.cards.length === 1 ? "" : "s"}${c ? " · seu baralho" : ""}</small></div>
-          <div class="fbact"><button type="button" class="btng" data-a="add" data-d="${d.id}">+ Cartão</button>${c ? `<button type="button" class="btng" data-a="edit" data-d="${d.id}">Editar</button><button type="button" class="btng${arm ? " armed" : ""}" data-a="del" data-d="${d.id}">${arm ? "Confirmar exclusão" : "Excluir"}</button>` : ""}</div></li>`; }).join("")}</ul>` : `<p class="note">Nenhum baralho neste nível ainda. Crie o seu.</p>`}
+          <div class="fbact">${playBtn}<button type="button" class="btng" data-a="add" data-d="${d.id}">+ Cartão</button>${c ? `<button type="button" class="btng" data-a="edit" data-d="${d.id}">Editar</button><button type="button" class="btng${arm ? " armed" : ""}" data-a="del" data-d="${d.id}">${arm ? "Confirmar exclusão" : "Excluir"}</button>` : ""}</div></li>`; }).join("")}</ul>` : `<p class="note">Nenhum baralho neste nível ainda. Crie o seu.</p>`}
       <p class="note">Baralhos prontos aceitam novos cartões; editar e excluir valem para os baralhos que você criou.</p>`;
     document.getElementById("fbNew").onclick = () => fabOpen("create");
     body.querySelectorAll("[data-a]").forEach(btn => btn.onclick = () => {
       const a = btn.dataset.a, d = btn.dataset.d;
-      if (a === "add") fabOpen("add", d); else if (a === "edit") fabOpen("edit", d);
+      if (a === "play") fabPlayDeck(d); else if (a === "add") fabOpen("add", d); else if (a === "edit") fabOpen("edit", d);
       else { if (fabDelArm !== d){ fabDelArm = d; fabOpen("list"); return; } p.customDecks = (p.customDecks || []).filter(x => x.id !== d); save(); fabDelArm = null; fabOpen("list"); }
     });
-  } else if (mode === "create"){
+    } else if (mode === "create"){
     body.innerHTML = `${back}<h3 class="fbh">Criar baralho</h3>${field("fbTitle","Nome do baralho","Ex.: Phrasal verbs do trabalho")}${field("fbDesc","Descrição (opcional)","Pra que serve esse baralho")}
       <div class="field"><label for="fbLvl">Nível</label><select id="fbLvl"><option value="">Todos os níveis</option>${LEVELS.map(L => `<option value="${L.id}"${L.id === p.cfg.level ? " selected" : ""}>${L.id} · ${esc(L.name)}</option>`).join("")}</select></div>
       <button type="button" class="btnp" id="fbSave">Criar e adicionar cartões</button>`;
